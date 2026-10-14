@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2B3A55">
+<title>話して聞いて</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Klee+One:wght@600&display=swap">
+<style>
+:root{
+  --cover:#2B3A55; --paper:#F7F4EC; --paper2:#EFEADC; --ink:#1F2A44; --sub:#5B6478;
+  --rule:#D9D3C3; --chip:#FFFDF7; --chipline:#B9B2A0; --accent:#1F4E8C; --onaccent:#FFFFFF;
+  --urgent:#C2410C; --hl:#FFF1C2; --ribbon:#B4232C; --ring:#B9B2A0;
+  --tab1:#CFDCE6; --tab2:#F2C9A0; --tab3:#E8D9B5; --done:#E4E0D4; --sent:#DCE6F2;
+  --hand:'Klee One','Zen Maru Gothic',cursive;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --cover:#10151F; --paper:#1E2430; --paper2:#181D27; --ink:#E8E4DA; --sub:#A6AEC0;
+    --rule:#343C4C; --chip:#262D3B; --chipline:#4A5366; --accent:#7FA8E0; --onaccent:#0E1522;
+    --urgent:#F08A5D; --hl:#3A3420; --ribbon:#C9434B; --ring:#4A5366;
+    --tab1:#33465A; --tab2:#5A4330; --tab3:#4D4530; --done:#2C313C; --sent:#25364D;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --cover:#10151F; --paper:#1E2430; --paper2:#181D27; --ink:#E8E4DA; --sub:#A6AEC0;
+  --rule:#343C4C; --chip:#262D3B; --chipline:#4A5366; --accent:#7FA8E0; --onaccent:#0E1522;
+  --urgent:#F08A5D; --hl:#3A3420; --ribbon:#C9434B; --ring:#4A5366;
+  --tab1:#33465A; --tab2:#5A4330; --tab3:#4D4530; --done:#2C313C; --sent:#25364D;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--cover);color:var(--ink);font-family:'Zen Maru Gothic','Hiragino Maru Gothic ProN','Yu Gothic',sans-serif;-webkit-text-size-adjust:100%}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+.book{display:flex;height:100%;max-width:480px;margin:0 auto;
+  padding:calc(8px + env(safe-area-inset-top,0px)) 0 calc(8px + env(safe-area-inset-bottom,0px))}
+.rings{width:22px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center}
+.rings i{display:block;width:16px;height:6px;border-radius:3px;background:var(--ring)}
+.page{flex:1;min-width:0;position:relative;background:var(--paper);border-radius:4px 10px 10px 4px;display:flex;flex-direction:column;overflow:hidden}
+.ribbon{position:absolute;top:0;right:20px;width:14px;height:50px;background:var(--ribbon);clip-path:polygon(0 0,100% 0,100% 100%,50% 80%,0 100%);pointer-events:none}
+.tabs{width:30px;flex-shrink:0;display:flex;flex-direction:column;gap:6px;padding-top:96px}
+.tabs button{writing-mode:vertical-rl;height:76px;border:none;border-radius:0 8px 8px 0;font-size:13px;font-weight:700;padding:0;color:var(--ink)}
+.tabs button[data-v="memo"]{background:var(--tab1)}
+.tabs button[data-v="book"]{background:var(--tab2)}
+.tabs button[data-v="hist"]{background:var(--tab3)}
+.tabs button[aria-current="page"]{background:var(--paper);margin-left:-4px}
+
+.view{display:none;flex:1;min-height:0;flex-direction:column}
+.view.on{display:flex}
+.head{padding:16px 16px 10px;border-bottom:2px solid var(--ink);display:flex;justify-content:space-between;align-items:flex-end;gap:8px}
+.head h1{margin:0;font-size:22px}
+.head .sub{font-size:13px;color:var(--sub);min-height:20px}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.bar{padding:10px 12px 12px;background:var(--paper2);border-top:1px solid var(--rule);display:flex;gap:8px;align-items:center}
+
+.btn{height:56px;border-radius:14px;border:1.5px solid var(--ink);background:var(--chip);font-weight:700;font-size:15px;padding:0 14px;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn.main{flex:1;border:none;background:var(--accent);color:var(--onaccent);font-size:17px}
+.btn.round{width:56px;padding:0;border-radius:28px;flex-shrink:0}
+.small{height:40px;border-radius:10px;border:1.5px solid var(--chipline);background:var(--chip);padding:0 12px;font-size:14px}
+.urgent{height:44px;padding:0 14px;border-radius:22px;border:1.5px solid var(--urgent);background:var(--chip);color:var(--urgent);font-weight:700;margin-right:30px}
+.urgent[aria-pressed="true"]{background:var(--urgent);color:var(--paper)}
+
+.opening{margin:10px 12px 0;padding:10px 12px;border:1.5px dashed var(--chipline);border-radius:12px;background:var(--chip);width:calc(100% - 24px);text-align:left;display:block}
+.opening small{display:block;font-size:12px;color:var(--sub)}
+.opening span{font-size:17px;font-weight:700;line-height:1.5}
+.guide{margin:8px 12px 4px;padding:10px 12px;border-radius:12px;background:var(--hl);font-size:15px;line-height:1.5}
+.guide b{display:block;font-size:13px;color:var(--sub);font-weight:700}
+
+.row{display:flex;align-items:center;min-height:50px;padding:0 16px;border-bottom:1px solid var(--rule);gap:10px}
+.row.col{flex-direction:column;align-items:stretch;padding:10px 16px;gap:8px}
+.row.next{background:var(--hl)}
+.row label,.lbl{width:68px;flex-shrink:0;font-size:13px;color:var(--sub)}
+.row.col .lbl{width:auto}
+.row input[type=text],.row input[type=tel],.row input[type=email],.row input[type=date]{flex:1;min-width:0;border:none;background:transparent;font-family:var(--hand);font-size:18px;height:48px}
+.row input.line{height:38px;border-bottom:1px dashed var(--chipline);font-size:16px}
+input::placeholder,textarea::placeholder{color:#8A8475}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{height:44px;padding:0 13px;border-radius:22px;border:1.5px solid var(--chipline);background:var(--chip);font-size:15px}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--onaccent)}
+
+.cats{padding:10px 12px;display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--rule)}
+.cards{padding:12px;display:flex;flex-direction:column;gap:10px}
+.card{background:var(--chip);border:1.5px solid var(--rule);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.card.mine{border-style:dashed;border-color:var(--accent)}
+.card .scene{font-size:13px;color:var(--sub);display:flex;justify-content:space-between;gap:8px;align-items:center}
+.card .say{font-size:19px;font-weight:700;line-height:1.6}
+.card.mine .say{font-family:var(--hand);font-weight:600}
+.card .memo{font-size:14px;color:var(--sub)}
+.tag{font-size:12px;padding:2px 8px;border-radius:10px;background:var(--sent);color:var(--accent);white-space:nowrap}
+.linkbtn{border:none;background:none;color:var(--sub);text-decoration:underline;font-size:13px;padding:6px}
+
+.item{width:100%;text-align:left;border:none;border-bottom:1px solid var(--rule);background:transparent;padding:12px 16px;display:flex;flex-direction:column;gap:4px}
+.item .top{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--sub);gap:6px}
+.item .who{font-family:var(--hand);font-size:18px}
+.item.done .who{text-decoration:line-through;color:var(--sub)}
+.item .what{font-size:14px;color:var(--sub)}
+.badge{font-size:12px;padding:3px 10px;border-radius:12px;border:1.5px solid var(--ink);color:var(--ink)}
+.badge.u{background:var(--urgent);border-color:var(--urgent);color:var(--paper)}
+.badge.s{background:var(--sent);border-color:var(--sent);color:var(--accent)}
+.badge.d{background:var(--done);border-color:var(--done);color:var(--sub)}
+.empty{padding:32px 20px;color:var(--sub);text-align:center;line-height:1.7}
+
+.veil{position:fixed;inset:0;background:rgba(10,14,22,.45);display:none;z-index:10}
+.veil.on{display:block}
+.sheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,100%);width:100%;max-width:480px;max-height:78%;background:var(--paper);border-radius:18px 18px 0 0;z-index:11;display:flex;flex-direction:column;transition:transform .22s ease;padding-bottom:env(safe-area-inset-bottom,0px)}
+.sheet.on{transform:translate(-50%,0)}
+.sheet .sh{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 8px;border-bottom:1px solid var(--rule)}
+.sheet .sh h2{margin:0;font-size:18px}
+.sheet .sb{overflow-y:auto;padding:12px 16px 16px;display:flex;flex-direction:column;gap:12px}
+.readback{font-size:20px;font-weight:700;line-height:1.8}
+.msg{white-space:pre-wrap;font-family:var(--hand);font-size:16px;line-height:1.7;background:var(--chip);border:1.5px solid var(--rule);border-radius:12px;padding:12px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:13px;color:var(--sub)}
+.field input,.field textarea,.field select{border:1.5px solid var(--rule);border-radius:12px;padding:10px 12px;background:var(--chip);font-size:17px}
+.field textarea{resize:vertical;min-height:90px;font-family:var(--hand)}
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:12px;font-size:14px;z-index:20;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion: reduce){.sheet{transition:none}}
+</style>
+</head>
+<body>
+<div class="book">
+  <div class="rings" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+  <main class="page">
+    <div class="ribbon" aria-hidden="true"></div>
+
+    <!-- メモ -->
+    <section class="view on" id="v-memo" aria-label="電話メモ">
+      <div class="head">
+        <div><div class="sub" id="memoTime"></div><h1>電話メモ</h1></div>
+        <button class="urgent" id="urgent" aria-pressed="false">急ぎ</button>
+      </div>
+      <div class="scroll">
+        <button class="opening" id="opening" aria-label="名乗りの文を編集">
+          <small>出る時</small><span id="openingText"></span>
+        </button>
+        <div class="guide" id="guide" aria-live="polite"></div>
+
+        <div class="row" data-row="name"><label for="f-name">お名前</label><input id="f-name" data-f="name" type="text" placeholder="〇〇様" autocomplete="off"></div>
+        <div class="row" data-row="company"><label for="f-company">会社名</label><input id="f-company" data-f="company" type="text" placeholder="〇〇工業" autocomplete="off"></div>
+        <div class="row col" data-row="purpose">
+          <div class="lbl">要件</div>
+          <div class="chips" data-group="purpose">
+            <button class="chip" data-val="折り返し希望">折り返し希望</button>
+            <button class="chip" data-val="見積">見積</button>
+            <button class="chip" data-val="日程">日程</button>
+            <button class="chip" data-val="その他">その他</button>
+          </div>
+          <input class="line" data-f="purposeNote" type="text" aria-label="要件の詳細" placeholder="ひとことメモ（キーボードのマイクも使えます）" autocomplete="off">
+        </div>
+        <div class="row" data-row="tel"><label for="f-tel">電話番号</label><input id="f-tel" data-f="tel" type="tel" inputmode="tel" placeholder="090-0000-0000" autocomplete="off"></div>
+        <div class="row"><label for="f-site">現場名</label><input id="f-site" data-f="site" type="text" placeholder="〇〇邸 改修工事" autocomplete="off"></div>
+        <div class="row"><label for="f-mail">メール</label><input id="f-mail" data-f="mail" type="email" inputmode="email" placeholder="name@example.com" autocomplete="off"></div>
+        <div class="row col">
+          <div class="lbl">期限</div>
+          <div class="chips" data-group="deadline">
+            <button class="chip" data-val="今日">今日</button>
+            <button class="chip" data-val="明日">明日</button>
+            <button class="chip" data-val="日付">日付</button>
+          </div>
+          <input id="f-date" data-f="deadlineDate" type="date" aria-label="期限の日付" hidden>
+        </div>
+        <div class="row col">
+          <div class="lbl">対応方法</div>
+          <div class="chips" data-group="method">
+            <button class="chip" data-val="電話">電話</button>
+            <button class="chip" data-val="メール">メール</button>
+            <button class="chip" data-val="伝言のみ">伝言のみ</button>
+          </div>
+        </div>
+        <div class="row"><label for="f-to">伝達者</label><input id="f-to" data-f="to" type="text" placeholder="誰に伝える？" autocomplete="off"></div>
+        <div style="padding:12px 16px;display:flex;justify-content:flex-end"><button class="linkbtn" id="clearMemo">このメモを消す</button></div>
+      </div>
+      <div class="bar">
+        <button class="btn" id="openHelp">
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2"/><path d="M9 7h7"/><path d="M9 11h5"/></svg>困った時</button>
+        <button class="btn" id="readback">復唱</button>
+        <button class="btn main" id="saveMemo">保存</button>
+      </div>
+    </section>
+
+    <!-- ブック -->
+    <section class="view" id="v-book" aria-label="困った時ブック">
+      <div class="head"><div><div class="sub" id="bookCount"></div><h1>困った時ブック</h1></div></div>
+      <div class="scroll">
+        <div class="cats" id="cats"></div>
+        <div class="cards" id="cards"></div>
+      </div>
+      <div class="bar">
+        <button class="btn main" id="addPhrase">
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>対応を追加</button>
+      </div>
+    </section>
+
+    <!-- 履歴 -->
+    <section class="view" id="v-hist" aria-label="メモ履歴">
+      <div class="head"><div><div class="sub" id="histCount"></div><h1>メモ履歴</h1></div></div>
+      <div class="scroll" id="histList"></div>
+      <div class="bar">
+        <button class="btn" id="openSettings">設定</button>
+        <button class="btn main" id="newMemo">新しいメモ</button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabs" aria-label="ページ">
+    <button data-v="memo" aria-current="page">メモ</button>
+    <button data-v="book">ブック</button>
+    <button data-v="hist">履歴</button>
+  </nav>
+</div>
+
+<div class="veil" id="veil"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sh"><h2 id="sheetTitle"></h2><button class="small" id="sheetClose">閉じる</button></div>
+  <div class="sb" id="sheetBody"></div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+'use strict';
+var KEY = 'hanashite-kiite.v1';
+
+var DEFAULT_PHRASES = [
+  {cat:'出る時', scene:'電話に出る', say:'{opening}'},
+  {cat:'出る時', scene:'担当者に代わる', say:'少々お待ちください。担当の者に代わります。'},
+  {cat:'聞き取れない', scene:'名前が聞き取れない', say:'恐れ入りますが、もう一度お名前をお願いできますか。'},
+  {cat:'聞き取れない', scene:'声が小さい・電波が悪い', say:'恐れ入ります、お電話が少々遠いようです。'},
+  {cat:'聞き取れない', scene:'番号・内容を確認したい', say:'確認のため、復唱いたします。'},
+  {cat:'聞き取れない', scene:'少し時間がほしい', say:'少々お待ちいただけますか。'},
+  {cat:'不在の時', scene:'席を外している', say:'あいにく〇〇は席を外しております。戻り次第、折り返しお電話いたしましょうか。'},
+  {cat:'不在の時', scene:'休み', say:'〇〇は本日お休みをいただいております。よろしければ、ご用件を承ります。'},
+  {cat:'不在の時', scene:'答えがわからない', say:'確認して、折り返しご連絡いたします。'},
+  {cat:'切る時', scene:'伝言を受けた', say:'〇〇に申し伝えます。私、{me}が承りました。'},
+  {cat:'切る時', scene:'最後のあいさつ', say:'お電話ありがとうございました。失礼いたします。'}
+];
+var BASE_CATS = ['出る時','聞き取れない','不在の時','切る時'];
+
+var GUIDE = {
+  name:{label:'お名前', say:'恐れ入りますが、お名前を伺ってもよろしいでしょうか。'},
+  company:{label:'会社名', say:'どちらの会社様でしょうか。'},
+  purpose:{label:'要件', say:'どのようなご用件でしょうか。'},
+  tel:{label:'電話番号', say:'念のため、お電話番号を伺ってもよろしいでしょうか。'}
+};
+var ORDER = ['name','company','purpose','tel'];
+
+function emptyDraft(){ return {name:'',company:'',purpose:'',purposeNote:'',tel:'',site:'',mail:'',deadline:'',deadlineDate:'',method:'',to:'',urgent:false,startedAt:null}; }
+
+var S = load();
+function load(){
+  var d = null;
+  try{ d = JSON.parse(localStorage.getItem(KEY)); }catch(e){}
+  d = d || {};
+  return {
+    draft: Object.assign(emptyDraft(), d.draft || {}),
+    history: Array.isArray(d.history) ? d.history : [],
+    custom: Array.isArray(d.custom) ? d.custom : [],
+    settings: Object.assign({company:'', me:''}, d.settings || {})
+  };
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){ toast('保存できませんでした（ブラウザの容量を確認してください）'); } }
+
+var $ = function(s, r){ return (r||document).querySelector(s); };
+var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function pad(n){ return (n<10?'0':'')+n; }
+var WD = ['日','月','火','水','木','金','土'];
+function fmt(ts){ var d = new Date(ts); return (d.getMonth()+1)+'/'+d.getDate()+'（'+WD[d.getDay()]+'）'+pad(d.getHours())+':'+pad(d.getMinutes()); }
+
+function toast(t){ var el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toast._t); toast._t = setTimeout(function(){ el.classList.remove('on'); }, 1800); }
+
+/* ---------- 表示切替 ---------- */
+function show(v){
+  $$('.view').forEach(function(el){ el.classList.toggle('on', el.id === 'v-'+v); });
+  $$('.tabs button').forEach(function(b){ if(b.dataset.v === v) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
+  if(v === 'book') renderBook();
+  if(v === 'hist') renderHist();
+}
+$$('.tabs button').forEach(function(b){ b.addEventListener('click', function(){ show(b.dataset.v); }); });
+
+/* ---------- 名乗り ---------- */
+function openingText(){
+  var c = S.settings.company || '〇〇', m = S.settings.me || '〇〇';
+  return 'お電話ありがとうございます。' + c + 'の' + m + 'です。';
+}
+function fillVars(s){ return s.replace('{opening}', openingText()).replace('{me}', S.settings.me || '〇〇'); }
+
+/* ---------- メモ ---------- */
+function touch(){ if(!S.draft.startedAt){ S.draft.startedAt = Date.now(); } }
+function isFilled(k){ return k === 'purpose' ? !!(S.draft.purpose || S.draft.purposeNote.trim()) : !!String(S.draft[k]).trim(); }
+
+function renderMemo(){
+  var d = S.draft;
+  $('#memoTime').textContent = d.startedAt ? fmt(d.startedAt) + ' 受電' : '入力を始めると時刻を記録します';
+  $('#openingText').textContent = openingText();
+  $$('[data-f]').forEach(function(el){ if(document.activeElement !== el) el.value = d[el.dataset.f] || ''; });
+  $$('.chips[data-group]').forEach(function(g){
+    var k = g.dataset.group;
+    $$('.chip', g).forEach(function(c){ c.setAttribute('aria-pressed', d[k] === c.dataset.val ? 'true' : 'false'); });
+  });
+  $('#f-date').hidden = d.deadline !== '日付';
+  $('#urgent').setAttribute('aria-pressed', d.urgent ? 'true' : 'false');
+  renderGuide();
+}
+function renderGuide(){
+  var next = null;
+  for(var i=0;i<ORDER.length;i++){ if(!isFilled(ORDER[i])){ next = ORDER[i]; break; } }
+  $$('.row[data-row]').forEach(function(r){ r.classList.toggle('next', r.dataset.row === next); });
+  var g = $('#guide');
+  if(next){ g.innerHTML = '<b>次に聞く：' + esc(GUIDE[next].label) + '</b>' + esc(GUIDE[next].say); }
+  else { g.innerHTML = '<b>基本は聞けました</b>「復唱」を押して、表示された文を読んで確認できます。'; }
+}
+
+$$('[data-f]').forEach(function(el){
+  el.addEventListener('input', function(){ touch(); S.draft[el.dataset.f] = el.value; save(); renderGuide(); if(S.draft.startedAt) $('#memoTime').textContent = fmt(S.draft.startedAt) + ' 受電'; });
+});
+$$('.chips[data-group]').forEach(function(g){
+  g.addEventListener('click', function(e){
+    var c = e.target.closest('.chip'); if(!c) return;
+    var k = g.dataset.group; touch();
+    S.draft[k] = S.draft[k] === c.dataset.val ? '' : c.dataset.val;
+    save(); renderMemo();
+    if(k === 'deadline' && S.draft.deadline === '日付') $('#f-date').focus();
+  });
+});
+$('#urgent').addEventListener('click', function(){ touch(); S.draft.urgent = !S.draft.urgent; save(); renderMemo(); });
+$('#opening').addEventListener('click', openSettings);
+$('#clearMemo').addEventListener('click', function(){
+  if(confirm('入力中のメモを消しますか？')){ S.draft = emptyDraft(); save(); renderMemo(); }
+});
+
+function deadlineText(d){
+  if(d.deadline === '日付' && d.deadlineDate){ var p = d.deadlineDate.split('-'); return (+p[1]) + '/' + (+p[2]); }
+  return d.deadline === '日付' ? '' : d.deadline;
+}
+function telSpoken(t){ return t.replace(/\s+/g,''); }
+
+function readbackText(d){
+  var parts = [];
+  var who = (d.company ? d.company + 'の' : '') + (d.name ? d.name.replace(/様$/,'') + '様' : '');
+  var what = [d.purpose, d.purposeNote.trim()].filter(Boolean).join('、');
+  var s = '確認いたします。';
+  if(who) s += who + '、';
+  if(what) s += what + 'の件で';
+  var dl = deadlineText(d);
+  if(dl) s += (what ? '、' : '') + dl + 'までに';
+  if(d.method === '電話') s += 'お電話でご連絡、';
+  else if(d.method === 'メール') s += 'メールでご連絡、';
+  else if(d.method === '伝言のみ') s += '伝言としてお伝え、';
+  if(d.to) s += d.to.replace(/さん$/,'') + 'に申し伝えます。'; else s = s.replace(/、$/,'') + (what || dl ? 'ですね。' : '');
+  parts.push(s);
+  if(d.tel) parts.push('お電話番号は ' + telSpoken(d.tel) + ' でよろしいでしょうか。');
+  if(d.mail) parts.push('メールアドレスは ' + d.mail + ' でよろしいでしょうか。');
+  return parts.join('\n');
+}
+
+function messageText(r){
+  var L = ['【電話メモ】' + fmt(r.startedAt || r.savedAt)];
+  if(r.urgent) L.push('★急ぎ');
+  var who = [r.company, r.name ? r.name.replace(/様$/,'') + '様' : ''].filter(Boolean).join(' ');
+  if(who) L.push(who + 'より');
+  var what = [r.purpose, r.purposeNote].filter(Boolean).join('：');
+  if(what) L.push('要件：' + what);
+  var dl = deadlineText(r); if(dl) L.push('期限：' + dl);
+  if(r.method) L.push('対応：' + r.method);
+  if(r.tel) L.push('電話：' + r.tel);
+  if(r.site) L.push('現場：' + r.site);
+  if(r.mail) L.push('メール：' + r.mail);
+  if(S.settings.me) L.push('受けた人：' + S.settings.me);
+  return L.join('\n');
+}
+
+$('#readback').addEventListener('click', function(){
+  var t = readbackText(S.draft);
+  openSheet('復唱', '<div class="readback">' + esc(t).replace(/\n/g,'<br>') + '</div>');
+});
+
+$('#saveMemo').addEventListener('click', function(){
+  var d = S.draft;
+  var any = ['name','company','purpose','purposeNote','tel','site','mail','to'].some(function(k){ return String(d[k]).trim(); });
+  if(!any){ toast('まだ何も書かれていません'); return; }
+  var r = Object.assign({}, d, {id: Date.now().toString(36), savedAt: Date.now(), status: '未対応'});
+  if(!r.startedAt) r.startedAt = r.savedAt;
+  S.history.unshift(r); S.draft = emptyDraft(); save(); renderMemo();
+  showMessage(r, '保存しました');
+});
+
+function showMessage(r, title){
+  var m = messageText(r);
+  openSheet(title || '伝達メッセージ',
+    (r.to ? '<div style="font-size:14px;color:var(--sub)">' + esc(r.to) + ' に送る文</div>' : '') +
+    '<div class="msg">' + esc(m) + '</div>' +
+    '<button class="btn main" id="copyMsg">コピーする</button>');
+  $('#copyMsg').addEventListener('click', function(){ copy(m); });
+}
+function copy(t){
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(t).then(function(){ toast('コピーしました'); }, fallback);
+  } else fallback();
+  function fallback(){
+    var ta = document.createElement('textarea'); ta.value = t; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); toast('コピーしました'); }catch(e){ toast('コピーできませんでした'); }
+    document.body.removeChild(ta);
+  }
+}
+
+/* ---------- ブック ---------- */
+var bookCat = '聞き取れない';
+function allPhrases(){
+  return DEFAULT_PHRASES.map(function(p){ return Object.assign({mine:false}, p); })
+    .concat(S.custom.map(function(p){ return Object.assign({mine:true}, p); }));
+}
+function allCats(){
+  var cats = BASE_CATS.slice();
+  S.custom.forEach(function(p){ if(cats.indexOf(p.cat) < 0) cats.push(p.cat); });
+  return cats;
+}
+function cardsHTML(list){
+  if(!list.length) return '<div class="empty">まだありません。<br>「対応を追加」から登録できます。</div>';
+  return list.map(function(p){
+    return '<div class="card' + (p.mine ? ' mine' : '') + '">' +
+      '<div class="scene"><span>' + esc(p.scene) + '</span>' +
+      (p.mine ? '<span style="display:flex;gap:4px;align-items:center"><span class="tag">自分で追加</span><button class="linkbtn" data-del="' + esc(p.id) + '">削除</button></span>' : '') +
+      '</div><div class="say">' + esc(fillVars(p.say)) + '</div>' +
+      (p.memo ? '<div class="memo">' + esc(p.memo) + '</div>' : '') + '</div>';
+  }).join('');
+}
+function catsHTML(){
+  return allCats().concat(['自分で追加']).map(function(c){
+    return '<button class="chip" data-cat="' + esc(c) + '" aria-pressed="' + (c === bookCat) + '">' + esc(c) + '</button>';
+  }).join('');
+}
+function filtered(){
+  var all = allPhrases();
+  return bookCat === '自分で追加' ? all.filter(function(p){ return p.mine; }) : all.filter(function(p){ return p.cat === bookCat; });
+}
+function renderBook(){
+  $('#bookCount').textContent = '対応例 ' + allPhrases().length + '件（うち自分で追加 ' + S.custom.length + '件）';
+  $('#cats').innerHTML = catsHTML();
+  $('#cards').innerHTML = cardsHTML(filtered());
+}
+function bindBook(root, rerender){
+  root.addEventListener('click', function(e){
+    var c = e.target.closest('[data-cat]');
+    if(c){ bookCat = c.dataset.cat; rerender(); return; }
+    var del = e.target.closest('[data-del]');
+    if(del && confirm('この対応を削除しますか？')){
+      S.custom = S.custom.filter(function(p){ return p.id !== del.dataset.del; }); save(); rerender();
+    }
+  });
+}
+bindBook($('#v-book'), renderBook);
+
+function helpSheet(){
+  openSheet('困った時',
+    '<div class="chips" id="hCats">' + catsHTML() + '</div><div id="hCards" style="display:flex;flex-direction:column;gap:10px">' + cardsHTML(filtered()) + '</div>');
+}
+$('#openHelp').addEventListener('click', function(){
+  helpSheet();
+  bindOnce($('#sheetBody'), function(){ $('#hCats').innerHTML = catsHTML(); $('#hCards').innerHTML = cardsHTML(filtered()); });
+});
+function bindOnce(el, rerender){
+  var h = function(e){
+    var c = e.target.closest('[data-cat]');
+    if(c){ bookCat = c.dataset.cat; rerender(); return; }
+    var del = e.target.closest('[data-del]');
+    if(del && confirm('この対応を削除しますか？')){
+      S.custom = S.custom.filter(function(p){ return p.id !== del.dataset.del; }); save(); rerender();
+    }
+  };
+  el.addEventListener('click', h);
+  sheetCleanup = function(){ el.removeEventListener('click', h); };
+}
+
+$('#addPhrase').addEventListener('click', function(){
+  var opts = allCats().map(function(c){ return '<option' + (c === bookCat ? ' selected' : '') + '>' + esc(c) + '</option>'; }).join('');
+  openSheet('対応を追加',
+    '<div class="field"><label for="a-cat">分類</label><select id="a-cat">' + opts + '<option value="__new">＋ 新しい分類</option></select></div>' +
+    '<div class="field" id="a-newwrap" hidden><label for="a-new">新しい分類の名前</label><input id="a-new" type="text"></div>' +
+    '<div class="field"><label for="a-scene">場面（どんな時）</label><input id="a-scene" type="text" placeholder="例：専門用語がわからない"></div>' +
+    '<div class="field"><label for="a-say">言うこと</label><textarea id="a-say" placeholder="例：担当の者に確認して、折り返しご連絡いたします。"></textarea></div>' +
+    '<div class="field"><label for="a-memo">補足（任意）</label><input id="a-memo" type="text" placeholder="例：〇〇さんに回す"></div>' +
+    '<button class="btn main" id="a-save">ブックに追加</button>');
+  $('#a-cat').addEventListener('change', function(){ $('#a-newwrap').hidden = this.value !== '__new'; });
+  $('#a-save').addEventListener('click', function(){
+    var cat = $('#a-cat').value === '__new' ? $('#a-new').value.trim() : $('#a-cat').value;
+    var scene = $('#a-scene').value.trim(), say = $('#a-say').value.trim();
+    if(!cat){ toast('分類の名前を入れてください'); return; }
+    if(!say){ toast('「言うこと」を入れてください'); return; }
+    S.custom.push({id: Date.now().toString(36), cat: cat, scene: scene || '（場面なし）', say: say, memo: $('#a-memo').value.trim()});
+    save(); bookCat = cat; closeSheet(); renderBook(); toast('ブックに追加しました');
+  });
+});
+
+/* ---------- 履歴 ---------- */
+var NEXT = {'未対応':'伝達済み','伝達済み':'完了','完了':'未対応'};
+function badge(st){ return '<span class="badge' + (st === '伝達済み' ? ' s' : st === '完了' ? ' d' : '') + '">' + esc(st) + '</span>'; }
+function renderHist(){
+  var open = S.history.filter(function(r){ return r.status === '未対応'; }).length;
+  $('#histCount').textContent = '未対応 ' + open + '件';
+  if(!S.history.length){ $('#histList').innerHTML = '<div class="empty">保存したメモがここに並びます。</div>'; return; }
+  $('#histList').innerHTML = S.history.map(function(r){
+    var who = [r.company, r.name ? r.name.replace(/様$/,'') + '様' : ''].filter(Boolean).join('　') || '（名前なし）';
+    var what = [r.purpose || r.purposeNote, deadlineText(r) ? '期限：' + deadlineText(r) : '', r.to ? '→ ' + r.to : ''].filter(Boolean).join(' ／ ');
+    return '<button class="item' + (r.status === '完了' ? ' done' : '') + '" data-id="' + esc(r.id) + '">' +
+      '<span class="top"><span>' + esc(fmt(r.startedAt)) + '</span><span style="display:flex;gap:6px">' + (r.urgent ? '<span class="badge u">急ぎ</span>' : '') + badge(r.status) + '</span></span>' +
+      '<span class="who">' + esc(who) + '</span>' + (what ? '<span class="what">' + esc(what) + '</span>' : '') + '</button>';
+  }).join('');
+}
+$('#histList').addEventListener('click', function(e){
+  var it = e.target.closest('[data-id]'); if(!it) return;
+  var r = S.history.filter(function(x){ return x.id === it.dataset.id; })[0]; if(!r) return;
+  var m = messageText(r);
+  openSheet('メモの詳細',
+    '<div class="msg">' + esc(m) + '</div>' +
+    '<div style="display:flex;gap:8px;align-items:center"><span style="font-size:13px;color:var(--sub)">状態</span>' + badge(r.status) + '</div>' +
+    '<button class="btn" id="h-next">「' + esc(NEXT[r.status]) + '」にする</button>' +
+    '<button class="btn main" id="h-copy">伝達メッセージをコピー</button>' +
+    '<button class="linkbtn" id="h-del" style="align-self:flex-end">このメモを削除</button>');
+  $('#h-next').addEventListener('click', function(){ r.status = NEXT[r.status]; save(); renderHist(); closeSheet(); toast('「' + r.status + '」にしました'); });
+  $('#h-copy').addEventListener('click', function(){ copy(m); });
+  $('#h-del').addEventListener('click', function(){
+    if(confirm('このメモを削除しますか？')){ S.history = S.history.filter(function(x){ return x !== r; }); save(); renderHist(); closeSheet(); }
+  });
+});
+$('#newMemo').addEventListener('click', function(){ show('memo'); });
+
+/* ---------- 設定 ---------- */
+function openSettings(){
+  openSheet('設定',
+    '<div class="field"><label for="s-co">自分の会社名（名乗りに使います）</label><input id="s-co" type="text" value="' + esc(S.settings.company) + '"></div>' +
+    '<div class="field"><label for="s-me">自分の名前</label><input id="s-me" type="text" value="' + esc(S.settings.me) + '"></div>' +
+    '<button class="btn main" id="s-save">保存</button>' +
+    '<div style="border-top:1px solid var(--rule);padding-top:12px;display:flex;flex-direction:column;gap:8px">' +
+    '<div style="font-size:13px;color:var(--sub)">データはこの端末のブラウザの中だけに保存されます。機種変更の前などはバックアップしてください。</div>' +
+    '<button class="btn" id="s-export">バックアップを書き出す</button>' +
+    '<label class="btn" for="s-import" style="cursor:pointer">バックアップを読み込む</label><input id="s-import" type="file" accept="application/json" hidden></div>');
+  $('#s-save').addEventListener('click', function(){
+    S.settings.company = $('#s-co').value.trim(); S.settings.me = $('#s-me').value.trim(); save(); renderMemo(); closeSheet(); toast('保存しました');
+  });
+  $('#s-export').addEventListener('click', function(){
+    var blob = new Blob([JSON.stringify(S, null, 2)], {type:'application/json'});
+    var a = document.createElement('a'); var d = new Date();
+    a.href = URL.createObjectURL(blob); a.download = 'hanashite-kiite-' + d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) + '.json';
+    document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  });
+  $('#s-import').addEventListener('change', function(){
+    var f = this.files[0]; if(!f) return;
+    var rd = new FileReader();
+    rd.onload = function(){
+      try{
+        var d = JSON.parse(rd.result);
+        if(!d || !Array.isArray(d.history)) throw 0;
+        if(!confirm('今のデータを、このバックアップで置き換えますか？')) return;
+        localStorage.setItem(KEY, JSON.stringify(d)); S = load(); renderMemo(); renderHist(); closeSheet(); toast('読み込みました');
+      }catch(e){ toast('このファイルは読み込めません'); }
+    };
+    rd.readAsText(f);
+  });
+}
+$('#openSettings').addEventListener('click', openSettings);
+
+/* ---------- シート ---------- */
+var sheetCleanup = null, lastFocus = null;
+function openSheet(title, html){
+  if(sheetCleanup){ sheetCleanup(); sheetCleanup = null; }
+  lastFocus = document.activeElement;
+  $('#sheetTitle').textContent = title; $('#sheetBody').innerHTML = html;
+  $('#veil').classList.add('on'); $('#sheet').classList.add('on');
+  setTimeout(function(){ $('#sheetClose').focus(); }, 50);
+}
+function closeSheet(){
+  if(sheetCleanup){ sheetCleanup(); sheetCleanup = null; }
+  $('#veil').classList.remove('on'); $('#sheet').classList.remove('on');
+  if(lastFocus && lastFocus.focus) lastFocus.focus();
+}
+$('#sheetClose').addEventListener('click', closeSheet);
+$('#veil').addEventListener('click', closeSheet);
+$('#sheet').addEventListener('keydown', function(e){ if(e.key === 'Escape') closeSheet(); });
+
+renderMemo();
+})();
+</script>
+</body>
+</html>

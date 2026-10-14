@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>夜じまい</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="夜じまい">
+<meta name="theme-color" content="#141B33">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF0F7; --bg2:#E2E6F2; --ink:#1B2440; --sub:#56608A; --line:#C9CFE4;
+  --star:#B7802A; --glow:rgba(183,128,42,.25); --violet:#5B4E96; --field:#FFFFFF;
+  --chip:#FFFFFF; --chipOn:#1B2440; --chipOnInk:#F3EBD3;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141B33; --bg2:#1B2440; --ink:#F3EBD3; --sub:#AEB8DD; --line:#2E3963;
+    --star:#E9B866; --glow:rgba(233,184,102,.35); --violet:#9C8FE0; --field:#1B2440;
+    --chip:#1E2849; --chipOn:#E9B866; --chipOnInk:#141B33;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141B33; --bg2:#1B2440; --ink:#F3EBD3; --sub:#AEB8DD; --line:#2E3963;
+  --star:#E9B866; --glow:rgba(233,184,102,.35); --violet:#9C8FE0; --field:#1B2440;
+  --chip:#1E2849; --chipOn:#E9B866; --chipOnInk:#141B33;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);
+  font-family:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",sans-serif;font-size:16px;line-height:1.7;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:480px;margin:0 auto;padding:20px 20px 40px;min-height:100%}
+h1,h2,.mincho{font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;font-weight:700}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid var(--star);outline-offset:2px}
+
+/* home sky */
+.sky{position:relative;height:56vh;min-height:320px;margin:0 -20px;overflow:hidden;
+  background:radial-gradient(120% 90% at 50% 110%,var(--bg2) 0%,var(--bg) 70%)}
+.dust{position:absolute;border-radius:50%;background:var(--sub);opacity:.35}
+.st{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border:0;background:none;padding:0;border-radius:50%}
+.st::before{content:"";position:absolute;inset:11px;border-radius:50%;background:var(--star);box-shadow:0 0 10px 3px var(--glow)}
+.st.new::before{inset:9px;box-shadow:0 0 18px 7px var(--glow)}
+.skyTitle{position:absolute;left:20px;bottom:18px;right:20px}
+.skyTitle h1{font-size:44px;line-height:1.1;margin:0;letter-spacing:.06em;writing-mode:vertical-rl;position:absolute;right:0;bottom:0;height:220px}
+.count{font-size:14px;color:var(--sub);margin:0;max-width:60%}
+.count b{font-family:"Shippori Mincho",serif;font-size:28px;color:var(--ink);font-weight:700;margin-right:2px}
+.empty{position:absolute;top:30%;left:20px;right:90px;color:var(--sub);font-size:14px}
+
+.note{margin:22px 0 0;padding:14px 16px;border-left:3px solid var(--star);background:var(--bg2);border-radius:0 10px 10px 0}
+.note small{display:block;color:var(--sub);font-size:12px}
+.primary{display:block;width:100%;margin-top:22px;padding:16px;border:0;border-radius:999px;background:var(--ink);color:var(--bg);font-weight:700;font-size:17px;letter-spacing:.08em}
+.ghost{background:none;border:1px solid var(--line);border-radius:999px;padding:10px 18px;color:var(--sub);font-size:14px}
+.link{background:none;border:0;color:var(--sub);font-size:14px;text-decoration:underline;text-underline-offset:3px;padding:8px 0}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:18px}
+
+/* flow */
+.top{display:flex;align-items:center;justify-content:space-between;height:44px}
+.dots{display:flex;gap:6px}
+.dots i{width:6px;height:6px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--star)}
+.step h2{font-size:26px;line-height:1.4;margin:26px 0 6px}
+.step p.lead{color:var(--sub);margin:0 0 20px;font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--chip);border-radius:999px;padding:9px 16px;font-size:15px}
+.chip[aria-pressed="true"]{background:var(--chipOn);color:var(--chipOnInk);border-color:var(--chipOn)}
+textarea,input[type=text]{width:100%;border:1px solid var(--line);background:var(--field);color:var(--ink);border-radius:14px;padding:14px;font:inherit;font-size:16px;resize:vertical}
+textarea{min-height:130px}
+label.small{display:block;font-size:13px;color:var(--sub);margin:18px 0 6px}
+.views{margin-top:16px;display:grid;gap:10px}
+.view{padding:14px 16px;border-radius:14px;background:var(--bg2)}
+.view h3{margin:0 0 4px;font-size:13px;color:var(--violet);font-weight:700}
+.view p{margin:0;font-size:15px}
+.thinking{color:var(--sub);font-size:14px;margin-top:14px}
+
+/* breath */
+.breath{display:grid;place-items:center;height:300px;position:relative}
+.orb{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 40% 35%,var(--star),var(--violet));opacity:.85;transform:scale(.7);transition:transform 4s ease-in-out}
+.orb.in{transform:scale(1.35);transition-duration:4s}
+.orb.out{transform:scale(.7);transition-duration:6s}
+.bword{position:absolute;bottom:0;font-family:"Shippori Mincho",serif;font-size:22px}
+
+/* end */
+.end{text-align:center;padding-top:16vh}
+.end .big{font-size:34px;margin:0 0 14px}
+.end p{color:var(--sub)}
+.bigstar{width:16px;height:16px;border-radius:50%;background:var(--star);margin:0 auto 36px;box-shadow:0 0 30px 12px var(--glow);animation:rise 2.4s ease-out both}
+@keyframes rise{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}
+
+/* sheet */
+.sheet{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);border-radius:20px 20px 0 0;
+  padding:20px 22px calc(26px + env(safe-area-inset-bottom,0px));max-width:480px;margin:0 auto;box-shadow:0 -10px 40px rgba(0,0,0,.25);transform:translateY(110%);transition:transform .3s ease}
+.sheet.open{transform:none}
+.sheet h3{font-family:"Shippori Mincho",serif;margin:0 0 8px;font-size:18px}
+.sheet .row{margin:8px 0;font-size:15px}
+.sheet .row small{display:block;color:var(--sub);font-size:12px}
+@media (prefers-reduced-motion: reduce){
+  .orb,.sheet{transition:none}
+  .bigstar{animation:none}
+}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="false" aria-labelledby="sheetTitle"></div>
+
+<script>
+(function(){
+const app = document.getElementById('app');
+const sheet = document.getElementById('sheet');
+const FEELINGS = ['疲れた','イライラ','不安','虚しい','悲しい','我慢した','ほっとした','うれしい','なんとも言えない'];
+let db = null, uid = null;
+let nights = [];          // [{date, feelings, done, tomorrow}]
+let draft = null;         // current flow
+
+// ---------- date: before 4am counts as previous night
+function nightKey(d){ d = d || new Date(); const x = new Date(d.getTime() - 4*3600e3);
+  return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0'); }
+function fmt(k){ const [y,m,d]=k.split('-'); return Number(m)+'月'+Number(d)+'日'; }
+function hash(s){ let h=2166136261; for(const c of s){ h^=c.charCodeAt(0); h=Math.imul(h,16777619);} return (h>>>0); }
+function esc(s){ const d=document.createElement('div'); d.textContent=s==null?'':String(s); return d.innerHTML; }
+
+// ---------- storage: db (private per person) with localStorage fallback
+const LS='yorujimai-nights';
+function lsLoad(){ try{ return JSON.parse(localStorage.getItem(LS)||'[]'); }catch(e){ return []; } }
+function lsSave(){ try{ localStorage.setItem(LS, JSON.stringify(nights)); }catch(e){} }
+async function loadNights(){
+  if(db && uid){
+    try{
+      const snap = await db.collection('data/users/'+uid).get();
+      nights = snap.docs.filter(d=>d.exists).map(d=>({...d.data()}));
+    }catch(e){ nights = lsLoad(); }
+  } else nights = lsLoad();
+  nights.sort((a,b)=>a.date<b.date?-1:1);
+}
+async function saveNight(n){
+  const i = nights.findIndex(x=>x.date===n.date);
+  if(i>=0) nights[i]=n; else nights.push(n);
+  nights.sort((a,b)=>a.date<b.date?-1:1);
+  if(db && uid){
+    try{ await db.collection('data/users/'+uid).doc(n.date).set(n); return; }catch(e){}
+  }
+  lsSave();
+}
+
+// ---------- HOME
+function renderHome(){
+  closeSheet();
+  const today = nightKey();
+  const prev = [...nights].reverse().find(n=>n.date<today && n.tomorrow);
+  const doneToday = nights.some(n=>n.date===today);
+  const latest = nights.length ? nights[nights.length-1].date : null;
+
+  let dust=''; for(let i=0;i<40;i++){ const h=hash('d'+i); const s=1+(h%3);
+    dust+=`<span class="dust" style="left:${h%100}%;top:${(h>>8)%92}%;width:${s}px;height:${s}px"></span>`; }
+  let stars=''; nights.forEach(n=>{ const h=hash(n.date);
+    const x=8+(h%74), y=8+((h>>9)%52);
+    stars+=`<button class="st${n.date===latest?' new':''}" style="left:${x}%;top:${y}%" data-d="${n.date}" aria-label="${fmt(n.date)}の夜"></button>`; });
+
+  app.innerHTML = `
+  <div class="sky" aria-label="これまでの夜空">
+    ${dust}${stars}
+    ${nights.length?'':'<p class="empty">ここはまだ何もない夜空です。<br>一晩しまうごとに、星がひとつ灯ります。</p>'}
+    <div class="skyTitle">
+      <p class="count">${nights.length?`<b>${nights.length}</b>つの夜をしまいました。星をタップすると、その日の「できたこと」が見られます。`:''}</p>
+      <h1>夜じまい</h1>
+    </div>
+  </div>
+  ${prev?`<div class="note"><small>${fmt(prev.date)}の自分から預かったこと</small>${esc(prev.tomorrow)}</div>`:''}
+  <button class="primary" id="start">${doneToday?'今夜をもう一度しまう':'今夜をしまう'}</button>
+  <div class="foot"><span style="font-size:13px;color:var(--sub)">5分くらいで終わります</span>
+  <button class="link" id="theme">明るさを切り替える</button></div>`;
+  app.querySelector('#start').onclick = startFlow;
+  app.querySelector('#theme').onclick = toggleTheme;
+  app.querySelectorAll('.st').forEach(b=>b.onclick=()=>openStar(b.dataset.d));
+}
+function openStar(d){
+  const n = nights.find(x=>x.date===d); if(!n) return;
+  sheet.innerHTML = `<h3 id="sheetTitle">${fmt(n.date)}の夜</h3>
+    <div class="row"><small>できたこと</small>${esc(n.done||'（書かなかった日）')}</div>
+    ${n.feelings&&n.feelings.length?`<div class="row"><small>置いていった気持ち</small>${n.feelings.map(esc).join('、')}</div>`:''}
+    <button class="ghost" id="closeS" style="margin-top:10px">閉じる</button>`;
+  sheet.classList.add('open');
+  sheet.querySelector('#closeS').onclick=closeSheet;
+}
+function closeSheet(){ sheet.classList.remove('open'); }
+function toggleTheme(){
+  const r=document.documentElement; const cur=r.dataset.theme ||
+    (matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  r.dataset.theme = cur==='dark'?'light':'dark';
+  try{ localStorage.setItem('yorujimai-theme', r.dataset.theme);}catch(e){}
+}
+
+// ---------- FLOW
+const STEPS = [stepFeel, stepWorry, stepDone, stepTomorrow, stepBreath];
+function startFlow(){
+  const today=nightKey(); const ex=nights.find(n=>n.date===today);
+  draft = {date:today, feelings: ex?[...(ex.feelings||[])]:[], worry:'', done: ex?ex.done||'':'', tomorrow: ex?ex.tomorrow||'':'', views:null, i:0};
+  renderStep();
+}
+function shell(inner, opts={}){
+  const dots = STEPS.map((_,k)=>`<i class="${k<=draft.i?'on':''}"></i>`).join('');
+  app.innerHTML = `<div class="top"><button class="link" id="back">${draft.i===0?'やめる':'戻る'}</button><div class="dots" aria-label="${draft.i+1} / ${STEPS.length}">${dots}</div><span style="width:40px"></span></div>
+  <section class="step">${inner}</section>`;
+  app.querySelector('#back').onclick=()=>{ stopBreath(); if(draft.i===0) renderHome(); else { draft.i--; renderStep(); } };
+}
+function next(){ draft.i++; if(draft.i>=STEPS.length) return finish(); renderStep(); }
+function renderStep(){ window.scrollTo(0,0); STEPS[draft.i](); }
+
+function stepFeel(){
+  shell(`<h2>今日、飲み込んだ気持ちに名前をつける</h2>
+  <p class="lead">潰したまま寝なくていい。ここに置いていけば大丈夫です。いくつ選んでも。</p>
+  <div class="chips">${FEELINGS.map(f=>`<button class="chip" aria-pressed="${draft.feelings.includes(f)}">${f}</button>`).join('')}</div>
+  <button class="primary" id="n">置いていく</button>`);
+  app.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{ const f=c.textContent;
+    const on=draft.feelings.includes(f); draft.feelings = on?draft.feelings.filter(x=>x!==f):[...draft.feelings,f];
+    c.setAttribute('aria-pressed', String(!on)); });
+  app.querySelector('#n').onclick=next;
+}
+
+function stepWorry(){
+  shell(`<h2>頭のぐるぐるを、外に出す</h2>
+  <p class="lead">文章じゃなくていいです。書いた内容はこのiPhoneの中にだけ残ります。</p>
+  <textarea id="w" placeholder="明日の会議が憂うつ、とか">${esc(draft.worry)}</textarea>
+  <button class="primary" id="n">書けた</button>
+  <button class="link" id="skip">今日は書かない</button>`);
+  const w=app.querySelector('#w');
+  w.oninput=()=>{ draft.worry=w.value; };
+  app.querySelector('#n').onclick=next;
+  app.querySelector('#skip').onclick=()=>{ draft.worry=''; next(); };
+}
+function stepDone(){
+  shell(`<h2>今日できたことを、ひとつだけ</h2>
+  <p class="lead">小さくていいです。「起きた」「出社した」も立派な一つ。これが今夜の星になります。</p>
+  <input type="text" id="d" maxlength="80" placeholder="仕事を全部片付けた" value="${esc(draft.done)}">
+  <button class="primary" id="n">星にする</button>`);
+  const d=app.querySelector('#d'); d.oninput=()=>draft.done=d.value;
+  app.querySelector('#n').onclick=next;
+}
+
+function stepTomorrow(){
+  shell(`<h2>明日の自分に、ひとつだけ預ける</h2>
+  <p class="lead">決めたらあとは明日の自分の仕事。今夜はもう考えなくていいです。明日の朝、ここに表示されます。</p>
+  <input type="text" id="t" maxlength="80" placeholder="朝イチでメールを1通返す" value="${esc(draft.tomorrow)}">
+  <button class="primary" id="n">預ける</button>
+  <button class="link" id="skip">特になし</button>`);
+  const t=app.querySelector('#t'); t.oninput=()=>draft.tomorrow=t.value;
+  app.querySelector('#n').onclick=next;
+  app.querySelector('#skip').onclick=()=>{ draft.tomorrow=''; next(); };
+}
+
+let bTimer=null;
+function stopBreath(){ clearTimeout(bTimer); bTimer=null; }
+function stepBreath(){
+  shell(`<h2>最後に、6回だけ深く吐く</h2>
+  <p class="lead">4秒吸って、6秒吐く。吐く方を長めにすると体がおやすみモードに入りやすくなります。</p>
+  <div class="breath"><div class="orb" id="orb"></div><div class="bword" id="bw" aria-live="polite">はじめる準備</div></div>
+  <button class="primary" id="n">おわる</button>`);
+  const orb=app.querySelector('#orb'), bw=app.querySelector('#bw');
+  let c=0;
+  function inhale(){ if(!document.body.contains(orb)) return; c++; bw.textContent='吸う（'+c+'/6）'; orb.className='orb in'; bTimer=setTimeout(exhale,4000); }
+  function exhale(){ bw.textContent='ゆっくり吐く'; orb.className='orb out';
+    bTimer=setTimeout(()=>{ if(c<6) inhale(); else bw.textContent='おつかれさまでした'; },6000); }
+  bTimer=setTimeout(inhale,1200);
+  app.querySelector('#n').onclick=()=>{ stopBreath(); next(); };
+}
+
+async function finish(){
+  const n={date:draft.date, feelings:draft.feelings, done:draft.done.trim(), tomorrow:draft.tomorrow.trim(), at:Date.now()};
+  app.innerHTML = `<div class="end"><div class="bigstar"></div>
+    <p class="big mincho">今日はここまで</p>
+    <p>${n.done?`「${esc(n.done)}」<br>ちゃんとできた一日でした。`:'一日をしまえただけで十分です。'}</p>
+    <p style="margin-top:28px">スマホを手の届かないところに置いて、<br>おやすみなさい。</p>
+    <button class="link" id="h" style="margin-top:30px">夜空にもどる</button></div>`;
+  app.querySelector('#h').onclick=renderHome;
+  await saveNight(n);
+}
+
+// ---------- boot
+try{ const t=localStorage.getItem('yorujimai-theme'); if(t) document.documentElement.dataset.theme=t; }catch(e){}
+nights = lsLoad(); renderHome();
+
+})();
+</script>
+</body>
+</html>
